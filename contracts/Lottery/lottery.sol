@@ -28,7 +28,7 @@ contract Lottery
         return players;
     }
 
-    function checkAddressExists(address newPlayer) internal returns (bool) {
+    function checkAddressExists(address newPlayer) internal view returns (bool) {
     for (uint i = 0; i < players.length; i++) {
         if (players[i] == newPlayer) {
             return true;
@@ -36,4 +36,27 @@ contract Lottery
     }
         return false;
     }
+
+    function randomNumber() internal view returns (uint)
+    {
+        require(players.length >= 3, "Not enough players");
+        require(msg.sender == manager, "You are not allowed to use the method");
+        return uint(keccak256(abi.encodePacked(block.difficulty, block.timestamp, players.length)));
+    }
+
+    function pickWinner() public
+    {
+        require(msg.sender == manager, "You are not allowed to use the method");
+        require(players.length >= 3, "Not enough players");
+
+        uint rand = randomNumber();
+        address payable winner;
+
+        uint index = rand % players.length;
+        winner = players[index];
+
+        winner.transfer(getBalance());
+    }
+   
+    
 }
