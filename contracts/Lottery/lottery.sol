@@ -4,16 +4,16 @@ pragma solidity >=0.5.0 <0.9.0;
 contract Lottery 
 {
     address payable[] public players;
-    address internal manager;
+    address payable manager;
 
     constructor() 
     {
-        manager = msg.sender;
+        manager = payable(msg.sender);        
     }
 
     receive() external payable { 
         require(msg.sender != manager, "manager cannot bet");
-        require(msg.value == 20, "You have to put exactly 20 Wei");
+        require(msg.value > 20, "You have to put exactly 20 Wei");
         require(!checkAddressExists(msg.sender), "You have already applied"); // Negate the condition
         players.push(payable(msg.sender));
     }
@@ -55,8 +55,19 @@ contract Lottery
         uint index = rand % players.length;
         winner = players[index];
 
-        winner.transfer(getBalance());
+        // manager        
+        uint256 managerFee = calculateManagerFee(getBalance());
+        manager.transfer(managerFee);
+        // Calculate remaining amount for winner(s)
+        uint256 remainingFunds = getBalance() - managerFee;
+
+        winner.transfer(remainingFunds);
+        players = new address payable[](0); // resetting the lottery
     }
-   
+
+    function calculateManagerFee(uint256 amount) public pure returns (uint256) 
+    {
+        return amount * 10 / 100;
+    }
     
 }
