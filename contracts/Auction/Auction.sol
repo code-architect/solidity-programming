@@ -19,9 +19,9 @@ contract Auction
 
     uint bidIncrement;
 
-    constructor() 
+    constructor(address eoa) 
     {
-        owner = payable(msg.sender);
+        owner = payable(eoa);
         auctionState = State.Running;
         startBlock = block.number;
         endBlock = startBlock + 40320;  // the auction will run for a week and every 15 second a nw blockis being minined! dot the math
@@ -121,8 +121,16 @@ contract Auction
             highestBindingnBid = min(currentBid, bids[highetBidder] + bidIncrement);
             highetBidder = payable(msg.sender);
         }
-    }
-
-    
+    }    
 }
 
+
+contract AuctionCreator
+{
+    Auction[] public auctions;
+    function createAuction() public 
+    {
+        Auction newAuction = new Auction(msg.sender);
+        auctions.push(newAuction);
+    }
+}
