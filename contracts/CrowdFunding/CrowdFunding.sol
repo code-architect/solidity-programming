@@ -11,6 +11,36 @@ contract CrowdFunding
     uint public goal;
     uint public raisedAmount;
 
+    struct Request
+    {
+        string description;
+        address payable recipient;
+        uint value;
+        bool completed;
+        uint noOfVoters;
+        mapping(address => bool) voters;
+    }
+
+    mapping(uint => Request) public requests;
+    uint public numRequestes;
+
+    modifier onlyAdmin{
+        require(msg.sender == admin,"Only admin can call this function");
+        _;
+    }
+
+    function createRequest(string memory _description, address payable _recipient, uint _value) public onlyAdmin 
+    {
+        Request storage newRequest = requests[numRequestes];
+        numRequestes++;
+
+        newRequest.description = _description;
+        newRequest.recipient = _recipient;
+        newRequest.value = _value;
+        newRequest.completed = false;
+        newRequest.noOfVoters = 0;
+    }
+
     constructor(uint _goal, uint _deadline) 
     {
         goal = _goal;
@@ -40,5 +70,19 @@ contract CrowdFunding
     function getBalance() public view returns(uint)
     {
         return address(this).balance;
+    }
+
+    function getrefund() public 
+    {
+        require(block.timestamp > deadline && raisedAmount < goal);
+        require(contributors[msg.sender] > 0, " You have not donated any cash");
+
+        address payable recipient = payable(msg.sender);
+        uint value = contributors[msg.sender];
+        recipient.transfer(value);
+
+        // the above line can be writen like below
+        //payable(msg.sender).transfer(contributors[msg.sender]);
+        contributors[msg.sender] = 0;
     }
 }
