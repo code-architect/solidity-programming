@@ -85,4 +85,26 @@ contract CrowdFunding
         //payable(msg.sender).transfer(contributors[msg.sender]);
         contributors[msg.sender] = 0;
     }
+
+    function voteRequest(uint _requestNo) public 
+    {
+        require(contributors[msg.sender] > 0, "You must be a contributor to vote");
+        Request storage thisRequest = requests[_requestNo];
+
+        require(thisRequest.voters[msg.sender] == false, "You have already voted");
+        thisRequest.voters[msg.sender] = true;
+        thisRequest.noOfVoters++;
+    }
+
+    function makePayment(uint _requestNo) public onlyAdmin
+    {
+        require(raisedAmount >= goal, "Goan not reached yet");
+        Request storage thisRequest = requests[_requestNo];
+
+        require(thisRequest.completed == false, " The request has complited");
+        require(thisRequest.noOfVoters > (numberOfContributors / 2), "Not enough vote to withdraw");
+
+        thisRequest.recipient.transfer(thisRequest.value);
+        thisRequest.completed = true;
+    }
 }
