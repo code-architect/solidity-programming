@@ -4,6 +4,7 @@ require('dotenv').config();
 const address  = "0x95222290DD7278Aa3Ddd389Cc1E1d165CC4BAfe5";
 const apiKey  = process.env.API_KEY;
 const https = require('https');
+const fs = require("fs");
 const provider = new ethers.providers.EtherscanProvider("homestead", apiKey);
 
 /**
@@ -76,4 +77,17 @@ const transactionDetails = async (provider, blockNumber) =>
     });
 }
 
-transactionDetails(provider,19445346);
+const getBlockCode = async (provider, address) =>
+{
+    const getContractCode = await provider.getCode(address);
+    const fs = require('fs');
+    fs.writeFile('data.txt', getContractCode, (err) => {
+        if (err) {
+            console.error('Error writing file:', err);
+        } else {
+            console.log('Data saved successfully!');
+        }
+    });
+}
+
+getBlockCode(provider,"0x95aD61b0a150d79219dCF64E1E6Cc01f0B64C4cE");
