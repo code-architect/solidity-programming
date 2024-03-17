@@ -19,7 +19,24 @@ describe("MyTest", () => {
 
         return {myTest, unlockedTime, lockedAmount, owner, otherAccount};
     }
-    
+
+    describe("Deployment", () => {
+        // check unlock time
+        it("Should check unlock time", async () => {
+            const {myTest, unlockedTime} = await loadFixture(runEveryTime);
+            expect(await myTest.unlockedTime()).to.equal(unlockedTime);
+        });
+
+        it("Should set the right owner", async () => {
+            const {myTest, owner} = await loadFixture(runEveryTime);
+            expect(await myTest.owner()).to.equal(owner.address);
+        });
+
+        it('should receive and store the funds to MyTest', async () => {
+            const {myTest, lockedAmount} = await loadFixture(runEveryTime);
+            expect(await ethers.provider.getBalance(myTest.address)).to.equal(lockedAmount);
+        });
+    });
 
     runEveryTime();
 });
