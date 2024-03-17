@@ -13,7 +13,7 @@ async function main()
     const myTest = await MyTest.deploy(unlockedTime, {value: lockedAmount});
 
     await myTest.deployed();
-    console.log(myTest.address);
+    console.log(myTest);
 }
 
 main().catch((error) => {
