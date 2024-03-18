@@ -20,7 +20,7 @@ contract MyTest
 
     function withdraw() public
     {
-        require(block.timestamp > unlockedTime, "Wait for the time period to be complited");
+        require(block.timestamp > unlockedTime, "Wait for the time period to be completed");
         require(msg.sender == owner, "You are not an owner");
 
         emit Withdrawal(address(this).balance, block.timestamp);
