@@ -15,6 +15,10 @@ contract ACL
         _;
     }
 
+    constructor(address _admin) public {
+        roles[_admin] = Role.Admin; // Assign admin role to the deployer address
+    }
+
     // This function allows anyone to check if a given address (_addr) has a specific role (_role). It returns true if the address has the specified role, and false otherwise.
     function hasRole(address _addr, Role _role) public view returns(bool)
     {
@@ -34,6 +38,17 @@ contract ACL
     }
 }
 
-contract MyContract is ACL {
+contract MyContract is ACL 
+{
+    constructor(address _admin) ACL(_admin) public {}
+
+    function TestFunctionRole() public onlyRole(Role.User) 
+    {
+        // Function logic only accessible to users
+    }
+
+    function someAdminFunction() public onlyRole(Role.Admin) {
+    // Function logic only accessible to admins
+    }
     
 }
