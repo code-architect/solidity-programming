@@ -1,0 +1,18 @@
+{
+  "name": "solidity-design-pattern",
+  "version": "1.0.0",
+  "description": "Solidity design patterns",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "code-architect",
+  "license": "ISC",
+  "devDependencies": {
+    "hardhat": "^2.12.0"
+  },
+  "dependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^2.0.0",
+    "@remix-project/remixd": "^0.6.28"
+  }
+}
