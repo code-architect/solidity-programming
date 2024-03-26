@@ -6,9 +6,18 @@ contract BankApp
     // owner
     address public owner;
 
+    event DepositMade(address indexed accountAddress, uint amount);
+    event WithdrawlMade(address indexed accountAddress, uint amount);
+
     constructor() 
     {
         owner = msg.sender;
+    }
+
+    modifier onlyOwner()
+    {
+        require(msg.sender == owner, "You do not have the permissions. Only te owner can change the balance");
+        _;
     }
 
     // user balance
@@ -19,6 +28,8 @@ contract BankApp
     {
         require(msg.value > 0, "Deposit amount must be greater than 0");
         userBalance[msg.sender] += msg.value;
+        
+        emit DepositMade(msg.sender, msg.value);
     }
 
     // withdraw
@@ -28,6 +39,8 @@ contract BankApp
         (bool success, ) = payable(msg.sender).call{value: amount}("");
         require(success, "Amount Transfer failed");
         userBalance[msg.sender] -= amount;
+
+        emit WithdrawlMade(msg.sender, amount);
     }
 
     // balance
@@ -37,10 +50,11 @@ contract BankApp
     }
 
     // change account balance
-    function creditOwner(address account, uint amount) public 
-    {
-        require(msg.sender == owner, "You do not have the permissions. Only te owner can change the balance");
+    function creditOwner(address account, uint amount) public onlyOwner
+    {        
+        require(account != address(0), " Cannot credit the zero address");        
         require(amount > 0, "Deposit amount must be greater than 0");
+        
         userBalance[account] += amount;
     }
 }
