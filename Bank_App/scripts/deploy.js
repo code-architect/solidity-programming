@@ -14,7 +14,6 @@ async function writeDeploymentInfo(contract) {
     const data = {
       contract: {
         address: contract.address,
-        signerAddress: contract.signer.address,
         abi: contract.interface.format(),
       },
     };
