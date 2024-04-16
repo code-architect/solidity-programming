@@ -21,5 +21,6 @@ contract CheckContract
             // actually retrieve the code, this needs assembly
             extcodecopy(addr, add(code, 0x20), 0, size)
         }
-    }  
+    }
+    
 }
